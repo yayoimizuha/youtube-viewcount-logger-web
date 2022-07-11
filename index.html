@@ -25,35 +25,41 @@
          style="background-image: url(asset/helloproject_logo.svg);background-size: contain;background-color: #002e46; ;filter: contrast(100%)">
         <div class="uk-container">
             <h3>Graph Page</h3>
-            <div class="uk-grid-match uk-light uk-child-width-1-3@m" uk-grid>
+            <div class="uk-grid-match uk-light uk-child-width-1-3@m" uk-grid="masonry: true">
                 <div>
                     <p>ハロー!プロジェクト及びアップフロント所属のアーティストのYouTubeにあるMVのプレイリストを毎日自動で巡回して再生回数を取得し、データベースにまとめています。</p>
+                    <p>Twitterで毎日グラフと表を生成して投稿していますが，画像で拡大したり，特定の曲のみを比較したりは出来ません。</p>
+                    <p>そこで，オンラインで表をいじって比較できるようなツールを作成することにしました。</p>
                 </div>
                 <div>
-                    <p>Twitterで毎日グラフと表を生成して投稿していますが，画像で拡大したり，特定の曲のみを比較したりは出来ません。
-                        <br>
-                        そこで，オンラインで表をいじって比較できるようなツールを作成することにしました。</p>
+                    <p>グラフ右部の凡例の色線部分をダブルクリックすると，その曲だけののグラフを表示することができます。</p>
+                    <p>また，グラフ上でクリック＆ドラッグすると，その四角部分を拡大して表示できます。<br>
+                        グラフの何もないところをダブルクリックすると拡大表示をリセットできます。<br>
+                    グラフの右上部に表示を操作する機能があるので利用してください。<br>
+                    特に「Show closest data on hover」を押すと，マウス追従の表示が減ってグラフが見やすくなります。</p>
                 </div>
-                <div class="uk-card uk-card-secondary uk-card-body uk-card-hover">
-                    <div class="uk-width-auto uk-padding-small">
-                        <a class="uk-comment-avater" uk-icon="twitter" width="80" height="80"
-                           href="https://mobile.twitter.com/hello_counter"></a>
-                    </div>
-                    <div class="uk-width-expand">
-                        <h4 class="uk-comment-title uk-margin-remove">
-                            <a class="uk-link-reset">
-                                Twitter毎日更新中！
-                            </a>
-                        </h4>
-                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                            <li>
-                                <a href="https://mobile.twitter.com/hello_counter">
-                                    @hello_counter
+                <div>
+                    <div class="uk-card uk-card-secondary uk-card-body uk-card-hover">
+                        <div class="uk-width-auto uk-padding-small">
+                            <a class="uk-comment-avater" uk-icon="twitter" width="80" height="80"
+                               href="https://mobile.twitter.com/hello_counter"></a>
+                        </div>
+                        <div class="uk-width-expand">
+                            <h4 class="uk-comment-title uk-margin-remove">
+                                <a class="uk-link-reset">
+                                    Twitter毎日更新中！
                                 </a>
-                            </li>
-                        </ul>
-                        <p>Twitterで毎日，再生回数の表とグラフ，再生回数トップ3を公開しています！ぜひフォローしてください！
-                        </p>
+                            </h4>
+                            <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                                <li>
+                                    <a href="https://mobile.twitter.com/hello_counter">
+                                        @hello_counter
+                                    </a>
+                                </li>
+                            </ul>
+                            <p>Twitterで毎日，再生回数の表とグラフ，再生回数トップ3を公開しています！ぜひフォローしてください！
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
