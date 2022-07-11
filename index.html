@@ -13,7 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/js/uikit-icons.min.js"></script>
 
     <!--- Plotly JS -->
-    <script src="https://cdn.plot.ly/plotly-2.12.1.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.js"></script>
+
+    <script src="asset/misc.js"></script>
 
 
 </head>
@@ -67,14 +69,22 @@
             <legend class="uk-legend uk-text-center uk-margin-top">グループ名</legend>
             <div class="uk-margin">
                 <label>
-                    <select class="uk-select" name="group">
+                    <select class="uk-select" name="group" id="group" onchange="inputChange(this)">
                         <option value="01">Option 01</option>
                         <option value="02">Option 02</option>
+                        <option value="03">Option 03</option>
+                        <option value="04">Option 04</option>
+                        <option value="05">Option 05</option>
                     </select>
                 </label>
             </div>
         </fieldset>
     </form>
+</div>
+<div class="uk-section-default uk-card-default uk-container-expand">
+    <div id="plot" style="height: 100vh;width: 98vw">
+
+    </div>
 </div>
 </body>
 </html>
