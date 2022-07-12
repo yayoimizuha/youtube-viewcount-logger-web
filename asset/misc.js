@@ -3,7 +3,26 @@ function inputChange(event) {
     console.log(select.value)
     let name = select.value
     console.log(event)
+    console.log('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv');
+    document.getElementById('plot').innerHTML = '';
+    data_list = []
+    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv')
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            let proceed_data = process_csv(data);
+            GraphPlot(proceed_data[0], proceed_data[1]);
+            proceed_data = [];
+        })
 
+}
+
+function initPullDownList(data) {
+    let rows = data.split(/\r\n|\n/);
+    let PullDownElement = document.getElementById('group');
+    for (let i = 0; i < rows.length - 1; i++) {
+        PullDownElement.insertAdjacentHTML('beforeend', `<option value="${rows[i]}">${rows[i]}</option>`);
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +30,15 @@ window.addEventListener('DOMContentLoaded', () => {
         .then(response => response.text())
         .then(data => {
             console.log(data);
-            process_csv(data);
+            let proceed_data = process_csv(data);
+            GraphPlot(proceed_data[0], proceed_data[1]);
+            proceed_data = [];
+        });
+    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/group_list.tsv')
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            initPullDownList(data);
         })
 });
 
@@ -22,6 +49,7 @@ function process_csv(raw) {
     console.log(rows.length);
     for (let i = 1; i < rows.length - 1; i++) {
         //console.log(rows[i].split('\t'));
+
         let x_data = rows[0].split('\t');
         x_data.splice(0, 2);
         let y_data = rows[i].split('\t');
@@ -46,12 +74,26 @@ function process_csv(raw) {
             text: hover_label,
             name: song_name,
             connectgaps: true,
-            hovertemplate: '<b>' + song_name + '</b> \+%{text}<extra></extra>'
+            hovertemplate: '<b>' + song_name + '</b>%{x} \+%{text}<extra></extra>'
         })
     }
     console.log(data_list);
-    let layout = {
-        title: 'モーニング娘。'
+    const layout = {
+        title: 'モーニング娘。',
+        hovermode: 'closest',
+        xaxis: {
+            tickformat: '%Y年%m月%d日',
+            showspikes: true,
+
+        }
     }
-    Plotly.newPlot('plot', data_list, layout);
+    return [data_list, layout]
+}
+
+function GraphPlot(data, layout) {
+    Plotly.newPlot('plot', data, layout, {
+        //scrollZoom: true,
+        locale: 'ja',
+        responsive: true,
+    });
 }
