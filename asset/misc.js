@@ -26,7 +26,7 @@ function initPullDownList(data) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    fetch('asset/save.tsv')
+    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/モーニング娘。.tsv')
         .then(response => response.text())
         .then(data => {
             console.log(data);
