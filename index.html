@@ -83,14 +83,15 @@
     </div>
 
 </div>
-<div class="uk-section-default uk-card-default uk-container">
+<div class="uk-section-default uk-card-expand uk-container" style="height: calc(400px / 3);">
     <form>
         <fieldset class="uk-fieldset">
 
-            <legend class="uk-legend uk-text-center uk-margin-top">グループ名を選択：</legend>
+            <legend class="uk-legend uk-text-center" style="padding-top: 1vh">グループ名を選択：</legend>
             <div class="uk-margin">
                 <label>
-                    <select class="uk-select" id="group" onchange="inputChange(this)">
+                    <select class="uk-select" id="group" onchange="inputChange(this)"
+                            style="cursor: pointer;border-radius: 4px 4px 4px 4px;border: 2px solid lightpink">
                     </select>
                 </label>
             </div>
@@ -98,7 +99,7 @@
     </form>
 </div>
 <div class="uk-section-default uk-card-default uk-container-expand">
-    <div id="plot" style="height: calc(100vh - 134px);width: 98vw">
+    <div id="plot" style="height: calc(100vh - 400px / 3);width: 98vw">
 
     </div>
 </div>
