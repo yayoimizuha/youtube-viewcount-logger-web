@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>グラフ表示用ページ</title>
-
-
     <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/css/uikit.min.css"/>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@latest/dist/css/uikit.min.css"/>
     <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.14.3/dist/js/uikit-icons.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit-icons.min.js"></script>
     <!--- Plotly JS -->
-    <script src="https://cdn.plot.ly/plotly-latest.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!--- Day.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@latest/dayjs.min.js"></script>
 
     <script src="asset/misc.js"></script>
 
-
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="YouTube再生回数表示ページ">
+    <meta name="twitter:description" content="Hello!Projectやアップフロント所属アーティストのYouTubeチャンネルにあるMVの再生回数を毎日記録してグラフで表示するサイトです。いろいろに表示を変えて見ることができます。">
+    <meta name="twitter:image" content="">
 </head>
 <body>
 <div class="uk-section-default uk-light">
@@ -71,7 +72,7 @@
     <form>
         <fieldset class="uk-fieldset">
 
-            <legend class="uk-legend uk-text-center uk-margin-top">グループ名</legend>
+            <legend class="uk-legend uk-text-center uk-margin-top">グループ名を選択：</legend>
             <div class="uk-margin">
                 <label>
                     <select class="uk-select" id="group" onchange="inputChange(this)">

@@ -9,7 +9,7 @@ function inputChange(event) {
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv')
         .then(response => response.text())
         .then(data => {
-            console.log(data);
+            //console.debug(data);
             let proceed_data = process_csv(data);
             GraphPlot(proceed_data[0], proceed_data[1]);
             proceed_data = [];
@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/モーニング娘。.tsv')
         .then(response => response.text())
         .then(data => {
-            console.log(data);
+            //console.debug(data);
             let proceed_data = process_csv(data);
             GraphPlot(proceed_data[0], proceed_data[1]);
             proceed_data = [];
@@ -37,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/group_list.tsv')
         .then(response => response.text())
         .then(data => {
-            console.log(data);
+            //console.debug(data);
             initPullDownList(data);
         })
 });
@@ -68,6 +68,7 @@ function process_csv(raw) {
             hover_label.push(y_data[j] - y_data[j - 1]);
         }
         let song_name = rows[i].split('\t')[1];
+        if (isNaN(y_data[y_data.length - 1])) continue;
         data_list.push({
             x: x_data,
             y: y_data,
@@ -77,23 +78,43 @@ function process_csv(raw) {
             hovertemplate: '<b>' + song_name + '</b>%{x} \+%{text}<extra></extra>'
         })
     }
-    console.log(data_list);
+    console.log(data_list[0]);
+    let before_date = data_list[0].x[0];
+    let after_date = data_list[0].x[data_list[0].x.length - 1];
+    console.log(before_date, after_date);
+    let dateDelta = dayjs(after_date).diff(dayjs(before_date), 'day', false);
+    console.debug(dateDelta);
     const layout = {
-        title: 'モーニング娘。',
+        title: document.getElementById('group').value,
         hovermode: 'closest',
         xaxis: {
             tickformat: '%Y年%m月%d日',
             showspikes: true,
+            autorange: false,
+            range: [dayjs(before_date).subtract(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD'),
+                dayjs(after_date).add(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD')],
 
+        },
+        yaxis: {
+            showspikes: true,
         }
-    }
+    };
+
+    console.log(layout);
     return [data_list, layout]
 }
 
 function GraphPlot(data, layout) {
     Plotly.newPlot('plot', data, layout, {
-        //scrollZoom: true,
         locale: 'ja',
         responsive: true,
+        toImageButtonOptions: {
+            format: 'svg',
+            filename: document.getElementById('group').value,
+            height: 2160,
+            width: 3840,
+            scale: 1,
+            displayModeBar: true,
+        }
     });
 }
