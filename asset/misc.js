@@ -19,7 +19,7 @@ function inputChange(arg) {
 
     document.title = default_title + ' - ' + name;
     console.log(document.title)
-    gtag('set', 'page_path', (new URL(window.location.href)).pathname);
+    gtag('set', 'page_path', window.location.pathname + window.location.search);
     gtag('event', 'page_view');
 
 }
