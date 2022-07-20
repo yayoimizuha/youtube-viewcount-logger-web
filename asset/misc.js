@@ -1,8 +1,7 @@
-function inputChange(event) {
+function inputChange(arg) {
     let select = document.getElementById('group');
     console.log(select.value)
     let name = select.value
-    console.log(event)
     console.log('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv');
     document.getElementById('plot').innerHTML = '';
     data_list = []
@@ -13,8 +12,24 @@ function inputChange(event) {
             let proceed_data = process_csv(data);
             GraphPlot(proceed_data[0], proceed_data[1]);
             proceed_data = [];
-        })
+        });
+    if (arg === 'onchange') {
+        update_url_param(name);
+    }
 
+
+}
+
+
+function update_url_param(name) {
+    if (name === null || name === 'onchange') {
+        name = document.getElementById('group').value;
+    }
+    document.getElementById('graph_canvas').removeAttribute('hidden')
+    let page_url = new URL(window.location.href)
+    page_url.searchParams.set('group', name)
+    console.log('set url:', page_url.href)
+    window.history.pushState(null, '', page_url.href)
 }
 
 function initPullDownList(data) {
@@ -26,21 +41,23 @@ function initPullDownList(data) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/モーニング娘。.tsv')
-        .then(response => response.text())
-        .then(data => {
-            //console.debug(data);
-            let proceed_data = process_csv(data);
-            GraphPlot(proceed_data[0], proceed_data[1]);
-            proceed_data = [];
-        });
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/group_list.tsv')
         .then(response => response.text())
         .then(data => {
             //console.debug(data);
             initPullDownList(data);
-        })
+            let group_name;
+            if ((group_name = (new URLSearchParams((new URL(window.location.href).search.slice(1)))).get('group')) != null) {
+                document.getElementById('group').value = group_name;
+                inputChange(null);
+                document.getElementById('graph_canvas').removeAttribute('hidden')
+            }
+        });
 });
+
+window.addEventListener('popstate', () => {
+    inputChange(null);
+})
 
 let data_list = [];
 
