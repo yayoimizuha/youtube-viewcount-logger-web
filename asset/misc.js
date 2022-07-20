@@ -1,8 +1,8 @@
 function inputChange(arg) {
     let select = document.getElementById('group');
-    console.log(select.value)
+    console.log('value: ', select.value)
     let name = select.value
-    console.log('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv');
+    console.log('fetch: ', 'https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv');
     document.getElementById('plot').innerHTML = '';
     data_list = []
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/' + name + '.tsv')
@@ -18,7 +18,7 @@ function inputChange(arg) {
     }
 
     document.title = default_title + ' - ' + name;
-    console.log(document.title)
+    console.log('title: ', document.title)
     gtag('set', 'page_path', window.location.pathname + window.location.search);
     gtag('event', 'page_view');
 
@@ -76,7 +76,7 @@ let data_list = [];
 
 function process_csv(raw) {
     let rows = raw.split(/\r\n|\n/);
-    console.log(rows.length);
+    console.log('items: ', rows.length);
     for (let i = 1; i < rows.length - 1; i++) {
         //console.log(rows[i].split('\t'));
 
@@ -111,9 +111,9 @@ function process_csv(raw) {
     //console.log(data_list[0]);
     let before_date = data_list[0].x[0];
     let after_date = data_list[0].x[data_list[0].x.length - 1];
-    console.log(before_date, after_date);
     let dateDelta = dayjs(after_date).diff(dayjs(before_date), 'day', false);
-    console.debug(dateDelta);
+    console.log(before_date, '->', after_date);
+    console.debug(dateDelta, '日間');
     const layout = {
         title: document.getElementById('group').value,
         hovermode: 'closest',
