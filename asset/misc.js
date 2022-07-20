@@ -17,6 +17,10 @@ function inputChange(arg) {
         update_url_param(name);
     }
 
+    document.title = default_title + ' - ' + name;
+    console.log(document.title)
+    gtag('set', 'page_path', (new URL(window.location.href)).pathname);
+    gtag('event', 'page_view');
 
 }
 
@@ -29,7 +33,7 @@ function update_url_param(name) {
     let page_url = new URL(window.location.href)
     page_url.searchParams.set('group', name)
     console.log('set url:', page_url.href)
-    window.history.pushState(null, '', page_url.href)
+    window.history.pushState({'group': name}, '', page_url.href)
 }
 
 function initPullDownList(data) {
@@ -40,7 +44,11 @@ function initPullDownList(data) {
     }
 }
 
+
+const default_title = document.querySelector('title').textContent;
+
 window.addEventListener('DOMContentLoaded', () => {
+    const default_title = document.querySelector('title').textContent;
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/group_list.tsv')
         .then(response => response.text())
         .then(data => {
@@ -56,7 +64,12 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('popstate', () => {
-    inputChange(null);
+    console.log('popstate')
+    if ((group_name = (new URLSearchParams((new URL(window.location.href).search.slice(1)))).get('group')) != null) {
+        inputChange(null);
+        document.getElementById('group').value = group_name;
+    }
+
 })
 
 let data_list = [];
@@ -95,7 +108,7 @@ function process_csv(raw) {
             hovertemplate: '<b>' + song_name + '</b>%{x} \+%{text}<extra></extra>'
         })
     }
-    console.log(data_list[0]);
+    //console.log(data_list[0]);
     let before_date = data_list[0].x[0];
     let after_date = data_list[0].x[data_list[0].x.length - 1];
     console.log(before_date, after_date);
@@ -117,7 +130,7 @@ function process_csv(raw) {
         }
     };
 
-    console.log(layout);
+    //console.log(layout);
     return [data_list, layout]
 }
 
