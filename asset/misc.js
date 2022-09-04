@@ -127,6 +127,7 @@ function process_csv(raw) {
         },
         yaxis: {
             showspikes: true,
+            rangemode: 'tozero',
         }
     };
 
