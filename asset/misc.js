@@ -37,10 +37,11 @@ function update_url_param(name) {
 }
 
 function initPullDownList(data) {
-    let rows = data.split(/\r\n|\n/);
+    let PullDownData = JSON.parse(data);
     let PullDownElement = document.getElementById('group');
-    for (let i = 0; i < rows.length - 1; i++) {
-        PullDownElement.insertAdjacentHTML('beforeend', `<option value="${rows[i]}">${rows[i]}</option>`);
+    for (const PullDownDataKey in PullDownData) {
+        console.log(PullDownDataKey)
+        PullDownElement.insertAdjacentHTML('beforeend', `<option value="${PullDownDataKey}">${PullDownData[PullDownDataKey]}</option>`);
     }
 }
 
@@ -49,10 +50,10 @@ const default_title = document.querySelector('title').textContent;
 
 window.addEventListener('DOMContentLoaded', () => {
     const default_title = document.querySelector('title').textContent;
-    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/tsvs/group_list.tsv')
+    fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/group_list.json')
         .then(response => response.text())
         .then(data => {
-            //console.debug(data);
+            // console.debug(data);
             initPullDownList(data);
             let group_name;
             if ((group_name = (new URLSearchParams((new URL(window.location.href).search.slice(1)))).get('group')) != null) {
@@ -115,19 +116,14 @@ function process_csv(raw) {
     console.log(before_date, '->', after_date);
     console.debug(dateDelta, '日間');
     const layout = {
-        title: document.getElementById('group').value,
-        hovermode: 'closest',
-        xaxis: {
+        title: document.getElementById('group').value, hovermode: 'closest', xaxis: {
             tickformat: '%Y年%m月%d日',
             showspikes: true,
             autorange: false,
-            range: [dayjs(before_date).subtract(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD'),
-                dayjs(after_date).add(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD')],
+            range: [dayjs(before_date).subtract(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD'), dayjs(after_date).add(Math.floor(dateDelta / 20), 'day').format('YYYY-MM-DD')],
 
-        },
-        yaxis: {
-            showspikes: true,
-            rangemode: 'tozero',
+        }, yaxis: {
+            showspikes: true, rangemode: 'tozero',
         }
     };
 
@@ -137,9 +133,7 @@ function process_csv(raw) {
 
 function GraphPlot(data, layout) {
     Plotly.newPlot('plot', data, layout, {
-        locale: 'ja',
-        responsive: true,
-        toImageButtonOptions: {
+        locale: 'ja', responsive: true, toImageButtonOptions: {
             format: 'svg',
             filename: document.getElementById('group').value,
             height: 2160,
