@@ -17,7 +17,7 @@ function inputChange(arg) {
         update_url_param(name);
     }
 
-    document.title = default_title + ' - ' + name;
+    document.title = default_title + ' - ' + select.options[select.selectedIndex].text;
     console.log('title: ', document.title)
     gtag('set', 'page_path', window.location.pathname + window.location.search);
     gtag('event', 'page_view');
@@ -115,8 +115,10 @@ function process_csv(raw) {
     let dateDelta = dayjs(after_date).diff(dayjs(before_date), 'day', false);
     console.log(before_date, '->', after_date);
     console.debug(dateDelta, '日間');
+    const sel = document.getElementById('group');
     const layout = {
-        title: document.getElementById('group').value, hovermode: 'closest', xaxis: {
+        title: sel.options[sel.selectedIndex].text,
+        hovermode: 'closest', xaxis: {
             tickformat: '%Y年%m月%d日',
             showspikes: true,
             autorange: false,
