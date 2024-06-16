@@ -49,7 +49,7 @@ function initPullDownList(data) {
 const default_title = document.querySelector('title').textContent;
 
 window.addEventListener('DOMContentLoaded', () => {
-    const default_title = document.querySelector('title').textContent;
+    // const default_title = document.querySelector('title').textContent;
     fetch('https://raw.githubusercontent.com/yayoimizuha/youtube-viewcount-logger-python/master/group_list.json')
         .then(response => response.text())
         .then(data => {
