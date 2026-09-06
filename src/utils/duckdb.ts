@@ -2,8 +2,8 @@
  * DuckDB-Wasm ユーティリティ
  */
 
-import * as duckdb from '@duckdb/duckdb-wasm';
-import type { QueryResult } from '../types/index.ts';
+import * as duckdb from "@duckdb/duckdb-wasm";
+import type { QueryResult } from "../types/index.ts";
 
 let db: duckdb.AsyncDuckDB | null = null;
 let conn: duckdb.AsyncDuckDBConnection | null = null;
@@ -33,18 +33,21 @@ export function initializeDuckDB(): Promise<duckdb.AsyncDuckDB> {
       const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
 
       const worker_url = URL.createObjectURL(
-        new Blob([`importScripts("${bundle.mainWorker!}");`], { type: 'text/javascript' })
+        new Blob([`importScripts("${bundle.mainWorker!}");`], {
+          type: "text/javascript",
+        }),
       );
 
       // ワーカーを作成
       const worker = new Worker(worker_url);
-      const logger = new duckdb.ConsoleLogger();
-      
+      // エラーは呼び出し元で処理単位に一度だけ記録する。
+      const logger = new duckdb.VoidLogger();
+
       const instance = new duckdb.AsyncDuckDB(logger, worker);
       await instance.instantiate(bundle.mainModule, bundle.pthreadWorker);
-      
+
       URL.revokeObjectURL(worker_url);
-      
+
       db = instance;
       return instance;
     } catch (error) {
@@ -59,13 +62,27 @@ export function initializeDuckDB(): Promise<duckdb.AsyncDuckDB> {
 /**
  * OPFSからDBファイルを登録
  */
-export async function registerDbFile(fileData: Uint8Array): Promise<void> {
+export async function registerDbFiles(
+  dataFile: File,
+  miscFile: File,
+): Promise<void> {
   if (!db) {
-    throw new Error('DuckDB is not initialized');
+    throw new Error("DuckDB is not initialized");
   }
 
   // ファイルをDuckDBに登録
-  await db.registerFileBuffer('data.duckdb', fileData);
+  await db.registerFileHandle(
+    "data.duckdb",
+    dataFile,
+    duckdb.DuckDBDataProtocol.BROWSER_FILEREADER,
+    true,
+  );
+  await db.registerFileHandle(
+    "misc.duckdb",
+    miscFile,
+    duckdb.DuckDBDataProtocol.BROWSER_FILEREADER,
+    true,
+  );
 }
 
 /**
@@ -73,7 +90,7 @@ export async function registerDbFile(fileData: Uint8Array): Promise<void> {
  */
 export async function openDatabase(): Promise<duckdb.AsyncDuckDBConnection> {
   if (!db) {
-    throw new Error('DuckDB is not initialized');
+    throw new Error("DuckDB is not initialized");
   }
 
   if (conn) {
@@ -82,13 +99,14 @@ export async function openDatabase(): Promise<duckdb.AsyncDuckDBConnection> {
 
   // DBファイルをオープン
   await db.open({
-    path: 'data.duckdb',
+    path: "data.duckdb",
     query: {
-      castBigIntToDouble: true
-    }
+      castBigIntToDouble: true,
+    },
   });
 
   conn = await db.connect();
+  await conn.query("ATTACH 'misc.duckdb' AS misc (READ_ONLY)");
   return conn;
 }
 
@@ -97,14 +115,18 @@ export async function openDatabase(): Promise<duckdb.AsyncDuckDBConnection> {
  */
 export async function executeQuery(sql: string): Promise<QueryResult> {
   if (!db) {
-    throw new Error('DuckDB is not initialized. Call initializeDuckDB() first.');
+    throw new Error(
+      "DuckDB is not initialized. Call initializeDuckDB() first.",
+    );
   }
   if (!conn) {
-    throw new Error('Database connection is not established. Call openDatabase() first.');
+    throw new Error(
+      "Database connection is not established. Call openDatabase() first.",
+    );
   }
 
   const result = await conn.query(sql);
-  const columns = result.schema.fields.map(f => f.name);
+  const columns = result.schema.fields.map((f) => f.name);
   const rows: Record<string, unknown>[] = [];
 
   for (let i = 0; i < result.numRows; i++) {
@@ -126,14 +148,16 @@ export async function executeQuery(sql: string): Promise<QueryResult> {
  */
 export async function getTables(): Promise<string[]> {
   const result = await executeQuery("SHOW TABLES");
-  return result.rows.map(row => row.name as string);
+  return result.rows.map((row) => row.name as string);
 }
 
 /**
  * テーブルのレコード数を取得
  */
 export async function getTableCount(tableName: string): Promise<number> {
-  const result = await executeQuery(`SELECT COUNT(*) as count FROM "${tableName}"`);
+  const result = await executeQuery(
+    `SELECT COUNT(*) as count FROM "${tableName}"`,
+  );
   return result.rows[0]?.count as number || 0;
 }
 
@@ -156,4 +180,5 @@ export async function shutdownDuckDB(): Promise<void> {
     await db.terminate();
     db = null;
   }
+  initPromise = null;
 }

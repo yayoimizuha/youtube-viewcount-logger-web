@@ -1,14 +1,21 @@
-# YouTube再生回数ロガー Web
+# YouTube / Instagramデータロガー Web
 
-ブラウザ上で YouTube 再生回数データをインタラクティブに可視化する SPA です。
+ブラウザ上でYouTube再生回数とInstagramフォロワー数をインタラクティブに可視化するSPAです。
 
 ## 特徴
 
 - **DuckDB-Wasm**: ブラウザ内で高速なSQLクエリを実行
-- **OPFS (Origin Private File System)**: データをブラウザにキャッシュして高速起動
-- **zstd ストリーミング展開**: 大容量データを効率的にダウンロード・展開
+- **OPFS (Origin Private File System)**:
+  データをブラウザにキャッシュして高速起動
+- **zstd ストリーミング展開**: 展開結果を順次 OPFS
+  に書き込み、ピークメモリを抑制
 - **Apache ECharts**: 大量データの描画に対応した高性能グラフ
+- **比較軸の切り替え**:
+  総再生回数／1日あたり再生回数と、動画公開日にそろえる／実日付で見るを独立して切り替え
+- **公開直後の伸びを比較**: 「1日あたり再生回数 ×
+  動画公開日基準」は両対数グラフで表示し、対数空間での局所回帰による平滑化幅を調整可能
 - **PWA対応**: オフラインでも動作可能
+- **Instagram表示**: 143アカウントのフォロワー数推移を別タブで比較
 
 ## セットアップ
 
@@ -40,14 +47,15 @@ deno task preview
 
 ## ブラウザ要件
 
-以下のブラウザの最新版が必要です:
+以下のブラウザを対象にしています:
 
-- Google Chrome 102+
-- Microsoft Edge 102+
-- Opera 88+
-- Chrome for Android 102+
+- Safari / iOS Safari 26+
+- その他の Chromium / Firefox 系ブラウザは、OPFS・WebAssembly・Web Worker
+  が利用できる最新版
 
-**注意**: Safari および Firefox は OPFS の同期アクセス API をサポートしていないため、現時点では動作しません。
+Safari のプライベートブラウズでは OPFS
+を利用できないため、通常のタブまたはホーム画面に追加した Web App
+で利用してください。大きなデータファイルを端末内に保存するため、十分な空き容量も必要です。
 
 ## 技術スタック
 
@@ -60,7 +68,9 @@ deno task preview
 
 ## データソース
 
-- データは [youtube-viewcount-logger-rust](https://github.com/yayoimizuha/youtube-viewcount-logger-rust) の GitHub Releases から取得されます
+- YouTube／Instagramデータは
+  [youtube-viewcount-logger-rust](https://github.com/yayoimizuha/youtube-viewcount-logger-rust)
+  の GitHub Releases から取得されます
 - 毎日自動で更新されています
 
 ## ライセンス

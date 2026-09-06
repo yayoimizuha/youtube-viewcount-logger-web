@@ -37,6 +37,7 @@ export function DataStatus({ metadata, onCheckUpdates, onRedownload, dataState }
 
       <div className="status-actions">
         <button 
+          type="button"
           className="btn btn-secondary btn-sm"
           onClick={onCheckUpdates}
           disabled={isLoading}
@@ -44,6 +45,7 @@ export function DataStatus({ metadata, onCheckUpdates, onRedownload, dataState }
           更新をチェック
         </button>
         <button 
+          type="button"
           className="btn btn-primary btn-sm"
           onClick={onRedownload}
           disabled={isLoading}
